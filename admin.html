@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Configurações administrativas da empresa">
+    <title>Painel Administrativo - Configurações</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="index.html" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Voltar
+            </a>
+            <h1>Configurações da Empresa</h1>
+        </header>
+
+        <main class="admin-panel">
+            <form id="adminForm" class="admin-form">
+                <div class="form-section">
+                    <h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Informações Básicas
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="companyName">Nome da Empresa *</label>
+                        <input type="text" id="companyName" required placeholder="Ex: Minha Empresa LTDA">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companySlogan">Slogan</label>
+                        <input type="text" id="companySlogan" placeholder="Ex: Excelência em serviços">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyCNPJ">CNPJ/CPF</label>
+                            <input type="text" id="companyCNPJ" placeholder="00.000.000/0000-00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyIE">Inscrição Estadual</label>
+                            <input type="text" id="companyIE" placeholder="000.000.000.000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        Contato
+                    </h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyPhone">Telefone *</label>
+                            <input type="tel" id="companyPhone" required placeholder="(00) 00000-0000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyWhatsapp">WhatsApp</label>
+                            <input type="tel" id="companyWhatsapp" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyEmail">E-mail</label>
+                        <input type="email" id="companyEmail" placeholder="contato@empresa.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyWebsite">Website</label>
+                        <input type="url" id="companyWebsite" placeholder="https://www.empresa.com">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Endereço
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="companyAddress">Logradouro *</label>
+                        <input type="text" id="companyAddress" required placeholder="Rua, Avenida, etc">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyNumber">Número</label>
+                            <input type="text" id="companyNumber" placeholder="123">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyComplement">Complemento</label>
+                            <input type="text" id="companyComplement" placeholder="Sala, Andar">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyNeighborhood">Bairro</label>
+                            <input type="text" id="companyNeighborhood" placeholder="Centro">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyCity">Cidade *</label>
+                            <input type="text" id="companyCity" required placeholder="São Paulo">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyState">Estado *</label>
+                            <input type="text" id="companyState" required placeholder="SP" maxlength="2">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyCEP">CEP</label>
+                            <input type="text" id="companyCEP" placeholder="00000-000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Logo da Empresa
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="companyLogo">Upload da Logo</label>
+                        <input type="file" id="companyLogo" accept="image/*">
+                        <small>Formatos aceitos: JPG, PNG, GIF (máx: 2MB)</small>
+                    </div>
+
+                    <div class="logo-preview" id="logoPreview" style="display: none;">
+                        <img src="" alt="Preview da Logo" id="logoPreviewImg">
+                        <button type="button" class="btn btn-remove" id="removeLogo">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Remover Logo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Informações Adicionais
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="companyServices">Principais Serviços</label>
+                        <textarea id="companyServices" rows="3"
+                            placeholder="Descreva os principais serviços oferecidos"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="defaultWarranty">Garantia Padrão</label>
+                        <input type="text" id="defaultWarranty" placeholder="Ex: 90 dias">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentTerms">Condições de Pagamento Padrão</label>
+                        <textarea id="paymentTerms" rows="2" placeholder="Ex: 50% entrada + 50% na entrega"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="defaultNotes">Observações Padrão</label>
+                        <textarea id="defaultNotes" rows="3"
+                            placeholder="Observações que aparecerão em todos os documentos"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Salvar Configurações
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Limpar Dados
+                    </button>
+                </div>
+            </form>
+
+            <div class="success-message" id="successMessage" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Configurações salvas com sucesso!
+            </div>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
