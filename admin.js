@@ -1,6 +1,5 @@
 // ==================== ADMIN PANEL ====================
 
-// Load storage utilities
 const Storage = {
     getCompanyData() {
         const data = localStorage.getItem('companyData');
@@ -19,7 +18,6 @@ class AdminPanel {
         this.logoInput = document.getElementById('companyLogo');
         this.logoPreview = document.getElementById('logoPreview');
         this.logoPreviewImg = document.getElementById('logoPreviewImg');
-        this.removeLogo = document.getElementById('removeLogo');
         this.successMessage = document.getElementById('successMessage');
         this.resetBtn = document.getElementById('resetBtn');
 
@@ -31,33 +29,56 @@ class AdminPanel {
     init() {
         this.loadData();
         this.attachEventListeners();
+
+        if (typeof ux !== 'undefined') {
+            ux.initLiveValidation('adminForm');
+            ux.initTooltips();
+        }
     }
 
     attachEventListeners() {
-        // Form submit
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.saveData();
         });
 
-        // Logo upload
         this.logoInput.addEventListener('change', (e) => {
             this.handleLogoUpload(e);
         });
 
-        // Remove logo
-        this.removeLogo.addEventListener('click', () => {
-            this.removeLogoImage();
-        });
+        const dropzone = document.querySelector('.ux-dropzone, .logo-preview');
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(event => {
+                dropzone.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('ux-dropzone--dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(event => {
+                dropzone.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('ux-dropzone--dragover');
+                });
+            });
+            dropzone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) this.processLogoFile(files[0]);
+            });
+        }
 
-        // Reset button
-        this.resetBtn.addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+        this.resetBtn.addEventListener('click', async () => {
+            const shouldReset = typeof ux !== 'undefined'
+                ? await ux.confirm(
+                    'Tem certeza que deseja limpar todos os dados da empresa? Esta ação não pode ser desfeita.',
+                    { danger: true, title: 'Limpar Dados', confirmText: 'Sim, Limpar', cancelText: 'Cancelar' }
+                )
+                : confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.');
+
+            if (shouldReset) {
                 this.clearData();
             }
         });
 
-        // Auto-format inputs
         this.applyInputMasks();
     }
 
@@ -65,7 +86,6 @@ class AdminPanel {
         const data = Storage.getCompanyData();
         if (!data) return;
 
-        // Load all fields
         Object.keys(data).forEach(key => {
             const input = document.getElementById(key);
             if (input && key !== 'companyLogo') {
@@ -73,7 +93,6 @@ class AdminPanel {
             }
         });
 
-        // Load logo
         if (data.companyLogo) {
             this.currentLogoData = data.companyLogo;
             this.showLogoPreview(data.companyLogo);
@@ -81,45 +100,54 @@ class AdminPanel {
     }
 
     saveData() {
-        const formData = new FormData(this.form);
         const data = {};
 
-        // Get all text inputs
         this.form.querySelectorAll('input:not([type="file"]), textarea, select').forEach(input => {
             data[input.id] = input.value;
         });
 
-        // Add logo
         data.companyLogo = this.currentLogoData;
-
-        // Save to localStorage
         Storage.saveCompanyData(data);
 
-        // Show success message
-        this.showSuccessMessage();
+        if (typeof ux !== 'undefined') {
+            ux.success('Configurações salvas com sucesso!');
+        } else {
+            this.showSuccessMessage();
+        }
     }
 
     handleLogoUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
+        this.processLogoFile(file);
+    }
 
-        // Validate file type
+    processLogoFile(file) {
         if (!file.type.startsWith('image/')) {
-            alert('Por favor, selecione uma imagem válida.');
+            if (typeof ux !== 'undefined') {
+                ux.error('Por favor, selecione uma imagem válida (JPG, PNG, GIF).');
+            } else {
+                alert('Por favor, selecione uma imagem válida.');
+            }
             return;
         }
 
-        // Validate file size (max 2MB)
         if (file.size > 2 * 1024 * 1024) {
-            alert('A imagem deve ter no máximo 2MB.');
+            if (typeof ux !== 'undefined') {
+                ux.warning('A imagem deve ter no máximo 2MB.');
+            } else {
+                alert('A imagem deve ter no máximo 2MB.');
+            }
             return;
         }
 
-        // Read and convert to base64
         const reader = new FileReader();
         reader.onload = (e) => {
             this.currentLogoData = e.target.result;
             this.showLogoPreview(e.target.result);
+            if (typeof ux !== 'undefined') {
+                ux.success('Logo carregada com sucesso!');
+            }
         };
         reader.readAsDataURL(file);
     }
@@ -127,12 +155,6 @@ class AdminPanel {
     showLogoPreview(imageSrc) {
         this.logoPreviewImg.src = imageSrc;
         this.logoPreview.style.display = 'block';
-    }
-
-    removeLogoImage() {
-        this.currentLogoData = '';
-        this.logoPreview.style.display = 'none';
-        this.logoInput.value = '';
     }
 
     showSuccessMessage() {
@@ -145,12 +167,17 @@ class AdminPanel {
     clearData() {
         localStorage.removeItem('companyData');
         this.form.reset();
-        this.removeLogoImage();
-        alert('Dados limpos com sucesso!');
+        this.currentLogoData = '';
+        this.logoPreview.style.display = 'none';
+        this.logoInput.value = '';
+        if (typeof ux !== 'undefined') {
+            ux.success('Dados limpos com sucesso!');
+        } else {
+            alert('Dados limpos com sucesso!');
+        }
     }
 
     applyInputMasks() {
-        // Phone mask
         const phoneInputs = document.querySelectorAll('#companyPhone, #companyWhatsapp');
         phoneInputs.forEach(input => {
             input.addEventListener('input', function(e) {
@@ -167,7 +194,6 @@ class AdminPanel {
             });
         });
 
-        // CNPJ mask
         const cnpjInput = document.getElementById('companyCNPJ');
         cnpjInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -182,7 +208,6 @@ class AdminPanel {
             }
         });
 
-        // CEP mask
         const cepInput = document.getElementById('companyCEP');
         cepInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -195,7 +220,6 @@ class AdminPanel {
             }
         });
 
-        // State uppercase
         const stateInput = document.getElementById('companyState');
         stateInput.addEventListener('input', function(e) {
             e.target.value = e.target.value.toUpperCase();

@@ -12,9 +12,10 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
     <div class="container">
         <header class="header">
-            <a href="index.html" class="back-button">
+            <a href="index.html" class="back-button" aria-label="Voltar para o menu">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -24,7 +25,7 @@
             <h1>Novo Recibo</h1>
         </header>
 
-        <main class="document-form">
+        <main class="document-form" id="main-content">
             <form id="receiptForm">
                 <div class="form-section">
                     <h2>
@@ -39,28 +40,28 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="receiptNumber">Número do Recibo</label>
-                            <input type="text" id="receiptNumber" placeholder="Ex: 2025001">
+                            <input type="text" id="receiptNumber" placeholder="Ex: 2025001" data-tooltip="Número sequencial para controle interno">
                         </div>
 
                         <div class="form-group">
-                            <label for="receiptDate">Data do Recibo *</label>
-                            <input type="date" id="receiptDate" required>
+                            <label for="receiptDate">Data do Recibo <span class="required-indicator" aria-hidden="true">*</span></label>
+                            <input type="date" id="receiptDate" required data-tooltip="Data de emissão do recibo">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="amountReceived">Valor Recebido *</label>
-                        <input type="text" id="amountReceived" required placeholder="R$ 0,00" class="money-input">
+                        <label for="amountReceived">Valor Recebido <span class="required-indicator" aria-hidden="true">*</span></label>
+                        <input type="text" id="amountReceived" required placeholder="R$ 0,00" class="money-input" data-tooltip="Valor total recebido">
                     </div>
 
                     <div class="form-group">
-                        <label for="amountText">Valor por Extenso *</label>
-                        <input type="text" id="amountText" required placeholder="Ex: Mil reais">
+                        <label for="amountText">Valor por Extenso <span class="required-indicator" aria-hidden="true">*</span></label>
+                        <input type="text" id="amountText" required placeholder="Ex: Mil reais" data-tooltip="Valor escrito por extenso para o recibo">
                     </div>
 
                     <div class="form-group">
-                        <label for="paymentMethod">Forma de Pagamento *</label>
-                        <select id="paymentMethod" required>
+                        <label for="paymentMethod">Forma de Pagamento <span class="required-indicator" aria-hidden="true">*</span></label>
+                        <select id="paymentMethod" required data-tooltip="Meio de pagamento utilizado">
                             <option value="">Selecione...</option>
                             <option value="Dinheiro">Dinheiro</option>
                             <option value="PIX">PIX</option>
@@ -85,26 +86,26 @@
                     </h2>
 
                     <div class="form-group">
-                        <label for="payerName">Nome do Pagador *</label>
-                        <input type="text" id="payerName" required placeholder="Nome completo ou Razão Social">
+                        <label for="payerName">Nome do Pagador <span class="required-indicator" aria-hidden="true">*</span></label>
+                        <input type="text" id="payerName" required placeholder="Nome completo ou Razão Social" data-tooltip="Nome completo do pagador">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="payerCPFCNPJ">CPF/CNPJ</label>
-                            <input type="text" id="payerCPFCNPJ" placeholder="000.000.000-00">
+                            <input type="text" id="payerCPFCNPJ" placeholder="000.000.000-00" data-tooltip="CPF (11 dígitos) ou CNPJ (14 dígitos)">
                         </div>
 
                         <div class="form-group">
                             <label for="payerPhone">Telefone</label>
-                            <input type="tel" id="payerPhone" placeholder="(00) 00000-0000">
+                            <input type="tel" id="payerPhone" placeholder="(00) 00000-0000" data-tooltip="Telefone do pagador para envio via WhatsApp">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="payerAddress">Endereço Completo</label>
                         <textarea id="payerAddress" rows="2"
-                            placeholder="Rua, número, bairro, cidade - Estado"></textarea>
+                            placeholder="Rua, número, bairro, cidade - Estado" data-tooltip="Endereço completo do pagador"></textarea>
                     </div>
                 </div>
 
@@ -119,19 +120,19 @@
                     </h2>
 
                     <div class="form-group">
-                        <label for="referringTo">Descrição do Serviço/Produto *</label>
+                        <label for="referringTo">Descrição do Serviço/Produto <span class="required-indicator" aria-hidden="true">*</span></label>
                         <textarea id="referringTo" rows="4" required
-                            placeholder="Descreva o serviço ou produto relacionado a este pagamento"></textarea>
+                            placeholder="Descreva o serviço ou produto relacionado a este pagamento" data-tooltip="Descrição detalhada do serviço ou produto pago"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="receiptObservations">Observações</label>
-                        <textarea id="receiptObservations" rows="3" placeholder="Informações adicionais"></textarea>
+                        <textarea id="receiptObservations" rows="3" placeholder="Informações adicionais" data-tooltip="Observações complementares no recibo"></textarea>
                     </div>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" data-tooltip="Gerar e baixar o PDF do recibo (Ctrl+S)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -139,7 +140,7 @@
                         </svg>
                         Gerar PDF
                     </button>
-                    <button type="button" class="btn btn-whatsapp" id="whatsappBtnReceipt">
+                    <button type="button" class="btn btn-whatsapp" id="whatsappBtnReceipt" data-tooltip="Enviar resumo via WhatsApp">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20"
                             height="20">
                             <path
@@ -147,7 +148,7 @@
                         </svg>
                         Enviar via WhatsApp
                     </button>
-                    <button type="button" class="btn btn-secondary" id="clearBtnReceipt">
+                    <button type="button" class="btn btn-secondary" id="clearBtnReceipt" data-tooltip="Limpar todos os campos do formulário">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -161,6 +162,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="ux.js"></script>
     <script src="recibo.js"></script>
 </body>
 

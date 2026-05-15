@@ -111,6 +111,16 @@ class BudgetForm {
         this.loadDefaults();
         this.addItem(); // Add first item
         this.attachEventListeners();
+
+        // UX enhancements
+        if (typeof ux !== 'undefined') {
+            ux.enableAutoSave('budgetForm', 'budget', {
+                excludeFields: ['discount'],
+                onRestore: () => ux.info('Dados anteriores restaurados automaticamente')
+            });
+            ux.createProgressBar('budgetForm');
+            ux.initLiveValidation('budgetForm');
+        }
     }
 
     loadDefaults() {
@@ -281,16 +291,53 @@ class BudgetForm {
 
     async handleSubmit(e) {
         e.preventDefault();
-        const data = this.getFormData();
+        const submitBtn = this.form.querySelector('button[type="submit"]');
 
-        // Save to history
-        Storage.saveDocument(data);
+        if (!this.form.checkValidity()) {
+            if (typeof ux !== 'undefined') {
+                ux.warning('Por favor, preencha todos os campos obrigatórios.');
+                ux.scrollToFirstError(this.form);
+            }
+            return;
+        }
 
-        // Generate PDF
-        await this.generatePDF(data);
+        if (typeof ux !== 'undefined') {
+            ux.setButtonLoading(submitBtn, true, 'Gerando pré-visualização...');
+        }
+
+        try {
+            const data = this.getFormData();
+            const doc = this.buildPDF(data);
+            const filename = `Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`;
+
+            if (typeof ux !== 'undefined') {
+                ux.previewPDF(doc, {
+                    filename,
+                    title: 'Pré-visualização do Orçamento',
+                    onDownload: () => {
+                        Storage.saveDocument(data);
+                        ux.clearAutoSave('budget');
+                        ux.success('Orçamento salvo no histórico!');
+                    },
+                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                });
+            } else {
+                doc.save(filename);
+                Storage.saveDocument(data);
+            }
+        } catch (err) {
+            if (typeof ux !== 'undefined') {
+                ux.error('Erro ao gerar o PDF. Tente novamente.');
+            }
+            console.error(err);
+        } finally {
+            if (typeof ux !== 'undefined') {
+                ux.setButtonLoading(submitBtn, false);
+            }
+        }
     }
 
-    async generatePDF(data) {
+    buildPDF(data) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const companyData = Storage.getCompanyData();
@@ -517,25 +564,56 @@ class BudgetForm {
             doc.text(`Gerado em ${Utils.formatDate(Utils.getTodayDate())}`, pageWidth - margin, 285, { align: 'right' });
         }
 
-        // Save PDF
-        doc.save(`Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`);
+        return doc;
+    }
 
-        alert('PDF gerado com sucesso!');
+    async generatePDF(data) {
+        const doc = this.buildPDF(data);
+        const filename = `Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`;
+        doc.save(filename);
+
+        if (typeof ux !== 'undefined') {
+            ux.success('PDF gerado e baixado com sucesso!');
+        }
     }
 
     async sendViaWhatsApp() {
         if (!this.form.checkValidity()) {
-            alert('Por favor, preencha todos os campos obrigatórios antes de enviar.');
+            if (typeof ux !== 'undefined') {
+                ux.warning('Por favor, preencha todos os campos obrigatórios antes de enviar.');
+                ux.scrollToFirstError(this.form);
+            }
             return;
         }
 
         const data = this.getFormData();
+
+        try {
+            const doc = this.buildPDF(data);
+            const filename = `Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`;
+            if (typeof ux !== 'undefined') {
+                ux.previewPDF(doc, {
+                    filename,
+                    title: 'Pré-visualização do Orçamento',
+                    onDownload: () => {
+                        Storage.saveDocument(data);
+                        ux.clearAutoSave('budget');
+                        ux.success('Orçamento salvo no histórico!');
+                    },
+                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                });
+            } else {
+                doc.save(filename);
+                this.sendWhatsAppFromData(data);
+            }
+        } catch (e) {
+            if (typeof ux !== 'undefined') ux.error('Erro ao gerar PDF para envio.');
+        }
+    }
+
+    sendWhatsAppFromData(data) {
         const companyData = Storage.getCompanyData();
 
-        // Gerar e baixar o PDF primeiro
-        await this.generatePDF(data);
-
-        // Criar mensagem para WhatsApp
         let message = `*ORÇAMENTO - ${companyData.companyName}*%0A%0A`;
         message += `📋 *Número:* ${data.budgetNumber}%0A`;
         message += `📅 *Data:* ${Utils.formatDate(data.budgetDate)}%0A`;
@@ -579,13 +657,21 @@ class BudgetForm {
         window.open(whatsappUrl, '_blank');
     }
 
-    clearForm() {
-        if (confirm('Tem certeza que deseja limpar o formulário?')) {
+    async clearForm() {
+        const shouldClear = typeof ux !== 'undefined'
+            ? await ux.confirm('Tem certeza que deseja limpar o formulário? Os dados não salvos serão perdidos.', { danger: true })
+            : confirm('Tem certeza que deseja limpar o formulário?');
+
+        if (shouldClear) {
             this.form.reset();
             this.itemsContainer.innerHTML = '';
             this.itemCounter = 0;
             this.loadDefaults();
             this.addItem();
+            if (typeof ux !== 'undefined') {
+                ux.clearAutoSave('budget');
+                ux.info('Formulário limpo');
+            }
         }
     }
 }

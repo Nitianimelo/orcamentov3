@@ -94,6 +94,15 @@ class ReceiptForm {
     init() {
         this.loadDefaults();
         this.attachEventListeners();
+
+        // UX enhancements
+        if (typeof ux !== 'undefined') {
+            ux.enableAutoSave('receiptForm', 'receipt', {
+                onRestore: () => ux.info('Dados anteriores restaurados automaticamente')
+            });
+            ux.createProgressBar('receiptForm');
+            ux.initLiveValidation('receiptForm');
+        }
     }
 
     loadDefaults() {
@@ -144,16 +153,53 @@ class ReceiptForm {
 
     async handleSubmit(e) {
         e.preventDefault();
-        const data = this.getFormData();
+        const submitBtn = this.form.querySelector('button[type="submit"]');
 
-        // Save to history
-        Storage.saveDocument(data);
+        if (!this.form.checkValidity()) {
+            if (typeof ux !== 'undefined') {
+                ux.warning('Por favor, preencha todos os campos obrigatórios.');
+                ux.scrollToFirstError(this.form);
+            }
+            return;
+        }
 
-        // Generate PDF
-        await this.generatePDF(data);
+        if (typeof ux !== 'undefined') {
+            ux.setButtonLoading(submitBtn, true, 'Gerando pré-visualização...');
+        }
+
+        try {
+            const data = this.getFormData();
+            const doc = this.buildPDF(data);
+            const filename = `Recibo_${data.receiptNumber}_${data.payerName.replace(/\s/g, '_')}.pdf`;
+
+            if (typeof ux !== 'undefined') {
+                ux.previewPDF(doc, {
+                    filename,
+                    title: 'Pré-visualização do Recibo',
+                    onDownload: () => {
+                        Storage.saveDocument(data);
+                        ux.clearAutoSave('receipt');
+                        ux.success('Recibo salvo no histórico!');
+                    },
+                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                });
+            } else {
+                doc.save(filename);
+                Storage.saveDocument(data);
+            }
+        } catch (err) {
+            if (typeof ux !== 'undefined') {
+                ux.error('Erro ao gerar o PDF. Tente novamente.');
+            }
+            console.error(err);
+        } finally {
+            if (typeof ux !== 'undefined') {
+                ux.setButtonLoading(submitBtn, false);
+            }
+        }
     }
 
-    async generatePDF(data) {
+    buildPDF(data) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const companyData = Storage.getCompanyData();
@@ -344,25 +390,56 @@ class ReceiptForm {
         doc.setTextColor(150, 150, 150);
         doc.text(`Gerado em ${Utils.formatDate(Utils.getTodayDate())}`, pageWidth / 2, 285, { align: 'center' });
 
-        // Save PDF
-        doc.save(`Recibo_${data.receiptNumber}_${data.payerName.replace(/\s/g, '_')}.pdf`);
+        return doc;
+    }
 
-        alert('Recibo gerado com sucesso!');
+    async generatePDF(data) {
+        const doc = this.buildPDF(data);
+        const filename = `Recibo_${data.receiptNumber}_${data.payerName.replace(/\s/g, '_')}.pdf`;
+        doc.save(filename);
+
+        if (typeof ux !== 'undefined') {
+            ux.success('Recibo gerado e baixado com sucesso!');
+        }
     }
 
     async sendViaWhatsApp() {
         if (!this.form.checkValidity()) {
-            alert('Por favor, preencha todos os campos obrigatórios antes de enviar.');
+            if (typeof ux !== 'undefined') {
+                ux.warning('Por favor, preencha todos os campos obrigatórios antes de enviar.');
+                ux.scrollToFirstError(this.form);
+            }
             return;
         }
 
         const data = this.getFormData();
+
+        try {
+            const doc = this.buildPDF(data);
+            const filename = `Recibo_${data.receiptNumber}_${data.payerName.replace(/\s/g, '_')}.pdf`;
+            if (typeof ux !== 'undefined') {
+                ux.previewPDF(doc, {
+                    filename,
+                    title: 'Pré-visualização do Recibo',
+                    onDownload: () => {
+                        Storage.saveDocument(data);
+                        ux.clearAutoSave('receipt');
+                        ux.success('Recibo salvo no histórico!');
+                    },
+                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                });
+            } else {
+                doc.save(filename);
+                this.sendWhatsAppFromData(data);
+            }
+        } catch (e) {
+            if (typeof ux !== 'undefined') ux.error('Erro ao gerar PDF para envio.');
+        }
+    }
+
+    sendWhatsAppFromData(data) {
         const companyData = Storage.getCompanyData();
 
-        // Gerar e baixar o PDF primeiro
-        await this.generatePDF(data);
-
-        // Criar mensagem para WhatsApp
         let message = `*RECIBO - ${companyData.companyName}*%0A%0A`;
         message += `📋 *Número:* ${data.receiptNumber}%0A`;
         message += `📅 *Data:* ${Utils.formatDate(data.receiptDate)}%0A`;
@@ -395,10 +472,18 @@ class ReceiptForm {
         window.open(whatsappUrl, '_blank');
     }
 
-    clearForm() {
-        if (confirm('Tem certeza que deseja limpar o formulário?')) {
+    async clearForm() {
+        const shouldClear = typeof ux !== 'undefined'
+            ? await ux.confirm('Tem certeza que deseja limpar o formulário? Os dados não salvos serão perdidos.', { danger: true })
+            : confirm('Tem certeza que deseja limpar o formulário?');
+
+        if (shouldClear) {
             this.form.reset();
             this.loadDefaults();
+            if (typeof ux !== 'undefined') {
+                ux.clearAutoSave('receipt');
+                ux.info('Formulário limpo');
+            }
         }
     }
 }

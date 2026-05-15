@@ -12,9 +12,10 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
     <div class="container">
         <header class="header">
-            <a href="index.html" class="back-button">
+            <a href="index.html" class="back-button" aria-label="Voltar para o menu">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -24,7 +25,7 @@
             <h1>Configurações da Empresa</h1>
         </header>
 
-        <main class="admin-panel">
+        <main class="admin-panel" id="main-content">
             <form id="adminForm" class="admin-form">
                 <div class="form-section">
                     <h2>
@@ -37,24 +38,24 @@
                     </h2>
 
                     <div class="form-group">
-                        <label for="companyName">Nome da Empresa *</label>
-                        <input type="text" id="companyName" required placeholder="Ex: Minha Empresa LTDA">
+                        <label for="companyName">Nome da Empresa <span class="required-indicator" aria-hidden="true">*</span></label>
+                        <input type="text" id="companyName" required placeholder="Ex: Minha Empresa LTDA" data-tooltip="Nome que aparecerá no cabeçalho dos documentos">
                     </div>
 
                     <div class="form-group">
                         <label for="companySlogan">Slogan</label>
-                        <input type="text" id="companySlogan" placeholder="Ex: Excelência em serviços">
+                        <input type="text" id="companySlogan" placeholder="Ex: Excelência em serviços" data-tooltip="Slogan opcional que aparece abaixo do nome">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="companyCNPJ">CNPJ/CPF</label>
-                            <input type="text" id="companyCNPJ" placeholder="00.000.000/0000-00">
+                            <input type="text" id="companyCNPJ" placeholder="00.000.000/0000-00" data-tooltip="CNPJ (14 dígitos) ou CPF (11 dígitos)">
                         </div>
 
                         <div class="form-group">
                             <label for="companyIE">Inscrição Estadual</label>
-                            <input type="text" id="companyIE" placeholder="000.000.000.000">
+                            <input type="text" id="companyIE" placeholder="000.000.000.000" data-tooltip="Inscrição estadual da empresa">
                         </div>
                     </div>
                 </div>
@@ -71,24 +72,24 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="companyPhone">Telefone *</label>
-                            <input type="tel" id="companyPhone" required placeholder="(00) 00000-0000">
+                            <label for="companyState">Estado</label>
+                            <input type="text" id="companyState" placeholder="SP" maxlength="2" data-tooltip="Sigla do estado (2 letras)">
                         </div>
 
                         <div class="form-group">
                             <label for="companyWhatsapp">WhatsApp</label>
-                            <input type="tel" id="companyWhatsapp" placeholder="(00) 00000-0000">
+                            <input type="tel" id="companyWhatsapp" placeholder="(00) 00000-0000" data-tooltip="WhatsApp para contato com clientes">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="companyEmail">E-mail</label>
-                        <input type="email" id="companyEmail" placeholder="contato@empresa.com">
+                        <input type="email" id="companyEmail" placeholder="contato@empresa.com" data-tooltip="E-mail de contato da empresa">
                     </div>
 
                     <div class="form-group">
                         <label for="companyWebsite">Website</label>
-                        <input type="url" id="companyWebsite" placeholder="https://www.empresa.com">
+                        <input type="url" id="companyWebsite" placeholder="https://www.empresa.com" data-tooltip="Site ou rede social da empresa">
                     </div>
                 </div>
 
@@ -104,43 +105,43 @@
                     </h2>
 
                     <div class="form-group">
-                        <label for="companyAddress">Logradouro *</label>
-                        <input type="text" id="companyAddress" required placeholder="Rua, Avenida, etc">
+                        <label for="companyAddress">Logradouro</label>
+                        <input type="text" id="companyAddress" placeholder="Rua, Avenida, etc" data-tooltip="Rua ou avenida do endereço">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="companyNumber">Número</label>
-                            <input type="text" id="companyNumber" placeholder="123">
+                            <input type="text" id="companyNumber" placeholder="123" data-tooltip="Número do endereço">
                         </div>
 
                         <div class="form-group">
                             <label for="companyComplement">Complemento</label>
-                            <input type="text" id="companyComplement" placeholder="Sala, Andar">
+                            <input type="text" id="companyComplement" placeholder="Sala, Andar" data-tooltip="Complemento do endereço (opcional)">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="companyNeighborhood">Bairro</label>
-                            <input type="text" id="companyNeighborhood" placeholder="Centro">
+                            <input type="text" id="companyNeighborhood" placeholder="Centro" data-tooltip="Bairro da empresa">
                         </div>
 
                         <div class="form-group">
-                            <label for="companyCity">Cidade *</label>
-                            <input type="text" id="companyCity" required placeholder="São Paulo">
+                            <label for="companyCity">Cidade</label>
+                            <input type="text" id="companyCity" placeholder="São Paulo" data-tooltip="Cidade da empresa">
                         </div>
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="companyState">Estado *</label>
-                            <input type="text" id="companyState" required placeholder="SP" maxlength="2">
-                        </div>
+                    <div class="form-group">
+                        <label for="companyAddress">Logradouro</label>
+                        <input type="text" id="companyAddress" placeholder="Rua, Avenida, etc" data-tooltip="Rua ou avenida do endereço">
+                    </div>
 
                         <div class="form-group">
                             <label for="companyCEP">CEP</label>
-                            <input type="text" id="companyCEP" placeholder="00000-000">
+                            <input type="text" id="companyCEP" placeholder="00000-000" data-tooltip="CEP no formato 00000-000">
                         </div>
                     </div>
                 </div>
@@ -157,20 +158,12 @@
 
                     <div class="form-group">
                         <label for="companyLogo">Upload da Logo</label>
-                        <input type="file" id="companyLogo" accept="image/*">
+                        <input type="file" id="companyLogo" accept="image/*" data-tooltip="Clique ou arraste uma imagem">
                         <small>Formatos aceitos: JPG, PNG, GIF (máx: 2MB)</small>
                     </div>
 
-                    <div class="logo-preview" id="logoPreview" style="display: none;">
+                    <div class="logo-preview ux-dropzone" id="logoPreview" style="display: none;">
                         <img src="" alt="Preview da Logo" id="logoPreviewImg">
-                        <button type="button" class="btn btn-remove" id="removeLogo">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Remover Logo
-                        </button>
                     </div>
                 </div>
 
@@ -187,35 +180,35 @@
                     <div class="form-group">
                         <label for="companyServices">Principais Serviços</label>
                         <textarea id="companyServices" rows="3"
-                            placeholder="Descreva os principais serviços oferecidos"></textarea>
+                            placeholder="Descreva os principais serviços oferecidos" data-tooltip="Lista de serviços que aparecerão nos documentos"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="defaultWarranty">Garantia Padrão</label>
-                        <input type="text" id="defaultWarranty" placeholder="Ex: 90 dias">
+                        <input type="text" id="defaultWarranty" placeholder="Ex: 90 dias" data-tooltip="Garantia padrão preenchida automaticamente nos orçamentos">
                     </div>
 
                     <div class="form-group">
                         <label for="paymentTerms">Condições de Pagamento Padrão</label>
-                        <textarea id="paymentTerms" rows="2" placeholder="Ex: 50% entrada + 50% na entrega"></textarea>
+                        <textarea id="paymentTerms" rows="2" placeholder="Ex: 50% entrada + 50% na entrega" data-tooltip="Condições de pagamento padrão nos orçamentos"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="defaultNotes">Observações Padrão</label>
                         <textarea id="defaultNotes" rows="3"
-                            placeholder="Observações que aparecerão em todos os documentos"></textarea>
+                            placeholder="Observações que aparecerão em todos os documentos" data-tooltip="Observações que serão incluídas automaticamente"></textarea>
                     </div>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" data-tooltip="Salvar todas as configurações (Ctrl+S)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                         Salvar Configurações
                     </button>
-                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                    <button type="button" class="btn btn-secondary" id="resetBtn" data-tooltip="Apagar todos os dados salvos">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -237,6 +230,7 @@
         </main>
     </div>
 
+    <script src="ux.js"></script>
     <script src="admin.js"></script>
 </body>
 

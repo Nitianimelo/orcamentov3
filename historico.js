@@ -334,10 +334,20 @@ ${doc.observations ? 'OBSERVAÇÕES:\n' + doc.observations : ''}
         alert(details.trim());
     }
 
-    deleteDocument(id) {
-        if (confirm('Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.')) {
+    async deleteDocument(id) {
+        const shouldDelete = typeof ux !== 'undefined'
+            ? await ux.confirm(
+                'Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.',
+                { danger: true, title: 'Excluir Documento', confirmText: 'Excluir', cancelText: 'Cancelar' }
+            )
+            : confirm('Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.');
+
+        if (shouldDelete) {
             Storage.deleteDocument(id);
             this.loadDocuments();
+            if (typeof ux !== 'undefined') {
+                ux.success('Documento excluído com sucesso!');
+            }
         }
     }
 }

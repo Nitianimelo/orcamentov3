@@ -12,9 +12,10 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
     <div class="container">
         <header class="header">
-            <a href="index.html" class="back-button">
+            <a href="index.html" class="back-button" aria-label="Voltar para o menu">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -24,7 +25,7 @@
             <h1>Histórico de Documentos</h1>
         </header>
 
-        <main class="history-page">
+        <main class="history-page" id="main-content">
             <div class="filter-section">
                 <div class="filter-tabs">
                     <button class="filter-tab active" data-filter="all">Todos</button>
@@ -72,6 +73,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="ux.js"></script>
     <script src="historico.js"></script>
 </body>
 
