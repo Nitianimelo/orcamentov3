@@ -417,21 +417,7 @@ class ReceiptForm {
         try {
             const doc = this.buildPDF(data);
             const filename = `Recibo_${data.receiptNumber}_${data.payerName.replace(/\s/g, '_')}.pdf`;
-            if (typeof ux !== 'undefined') {
-                ux.previewPDF(doc, {
-                    filename,
-                    title: 'Pré-visualização do Recibo',
-                    onDownload: () => {
-                        Storage.saveDocument(data);
-                        ux.clearAutoSave('receipt');
-                        ux.success('Recibo salvo no histórico!');
-                    },
-                    onWhatsApp: () => this.sharePDF(doc, data, filename)
-                });
-            } else {
-                doc.save(filename);
-                this.sharePDF(doc, data, filename);
-            }
+            await this.sharePDF(doc, data, filename);
         } catch (e) {
             if (typeof ux !== 'undefined') ux.error('Erro ao gerar PDF para envio.');
         }
