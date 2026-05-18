@@ -319,7 +319,7 @@ class BudgetForm {
                         ux.clearAutoSave('budget');
                         ux.success('Orçamento salvo no histórico!');
                     },
-                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                    onWhatsApp: () => this.sharePDF(doc, data, filename)
                 });
             } else {
                 doc.save(filename);
@@ -600,18 +600,44 @@ class BudgetForm {
                         ux.clearAutoSave('budget');
                         ux.success('Orçamento salvo no histórico!');
                     },
-                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                    onWhatsApp: () => this.sharePDF(doc, data, filename)
                 });
             } else {
                 doc.save(filename);
-                this.sendWhatsAppFromData(data);
+                this.sharePDF(doc, data, filename);
             }
         } catch (e) {
             if (typeof ux !== 'undefined') ux.error('Erro ao gerar PDF para envio.');
         }
     }
 
-    sendWhatsAppFromData(data) {
+    async sharePDF(doc, data, filename) {
+        const pdfBlob = doc.output('blob');
+        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: `Orçamento ${data.budgetNumber}`,
+                    text: `Segue o orçamento para ${data.clientName}.`
+                });
+                Storage.saveDocument(data);
+                if (typeof ux !== 'undefined') ux.success('PDF enviado para o WhatsApp!');
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Erro ao compartilhar:', err);
+                }
+            }
+        }
+
+        // Fallback: baixar PDF + abrir WhatsApp com mensagem
+        doc.save(filename);
+        this.sendWhatsAppText(data);
+    }
+
+    sendWhatsAppText(data) {
         const companyData = Storage.getCompanyData();
 
         let message = `*ORÇAMENTO - ${companyData.companyName}*%0A%0A`;
@@ -644,6 +670,8 @@ class BudgetForm {
         if (data.paymentConditions) {
             message += `%0A💳 *Pagamento:* ${data.paymentConditions}%0A`;
         }
+
+        message += `%0A📎 *O PDF do orçamento foi baixado. Anexe-o nesta conversa.*`;
 
         const phoneNumber = data.clientPhone ? data.clientPhone.replace(/\D/g, '') : '';
         const whatsappUrl = phoneNumber

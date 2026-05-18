@@ -181,7 +181,7 @@ class ReceiptForm {
                         ux.clearAutoSave('receipt');
                         ux.success('Recibo salvo no histórico!');
                     },
-                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                    onWhatsApp: () => this.sharePDF(doc, data, filename)
                 });
             } else {
                 doc.save(filename);
@@ -426,18 +426,44 @@ class ReceiptForm {
                         ux.clearAutoSave('receipt');
                         ux.success('Recibo salvo no histórico!');
                     },
-                    onWhatsApp: () => this.sendWhatsAppFromData(data)
+                    onWhatsApp: () => this.sharePDF(doc, data, filename)
                 });
             } else {
                 doc.save(filename);
-                this.sendWhatsAppFromData(data);
+                this.sharePDF(doc, data, filename);
             }
         } catch (e) {
             if (typeof ux !== 'undefined') ux.error('Erro ao gerar PDF para envio.');
         }
     }
 
-    sendWhatsAppFromData(data) {
+    async sharePDF(doc, data, filename) {
+        const pdfBlob = doc.output('blob');
+        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: `Recibo ${data.receiptNumber}`,
+                    text: `Segue o recibo de ${data.payerName}.`
+                });
+                Storage.saveDocument(data);
+                if (typeof ux !== 'undefined') ux.success('PDF enviado para o WhatsApp!');
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Erro ao compartilhar:', err);
+                }
+            }
+        }
+
+        // Fallback: baixar PDF + abrir WhatsApp com mensagem
+        doc.save(filename);
+        this.sendWhatsAppText(data);
+    }
+
+    sendWhatsAppText(data) {
         const companyData = Storage.getCompanyData();
 
         let message = `*RECIBO - ${companyData.companyName}*%0A%0A`;
@@ -459,6 +485,8 @@ class ReceiptForm {
         if (data.observations) {
             message += `%0A💬 *Observações:* ${data.observations}%0A`;
         }
+
+        message += `%0A📎 *O PDF do recibo foi baixado. Anexe-o nesta conversa.*`;
 
         const phoneNumber = data.payerPhone ? data.payerPhone.replace(/\D/g, '') : '';
         const whatsappUrl = phoneNumber
