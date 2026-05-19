@@ -310,20 +310,21 @@ class BudgetForm {
             const doc = this.buildPDF(data);
             const filename = `Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`;
 
+            // Sempre salvar no histórico antes de preview/compartilhar
+            Storage.saveDocument(data);
+            if (typeof ux !== 'undefined') ux.clearAutoSave('budget');
+
             if (typeof ux !== 'undefined') {
                 ux.previewPDF(doc, {
                     filename,
                     title: 'Pré-visualização do Orçamento',
                     onDownload: () => {
-                        Storage.saveDocument(data);
-                        ux.clearAutoSave('budget');
                         ux.success('Orçamento salvo no histórico!');
                     },
                     onWhatsApp: () => this.sharePDF(doc, data, filename)
                 });
             } else {
                 doc.save(filename);
-                Storage.saveDocument(data);
             }
         } catch (err) {
             if (typeof ux !== 'undefined') {
@@ -588,6 +589,10 @@ class BudgetForm {
 
         const data = this.getFormData();
 
+        // Sempre salvar no histórico antes de compartilhar
+        Storage.saveDocument(data);
+        if (typeof ux !== 'undefined') ux.clearAutoSave('budget');
+
         try {
             const doc = this.buildPDF(data);
             const filename = `Orcamento_${data.budgetNumber}_${data.clientName.replace(/\s/g, '_')}.pdf`;
@@ -608,7 +613,6 @@ class BudgetForm {
                     title: `Orçamento ${data.budgetNumber}`,
                     text: `Segue o orçamento para ${data.clientName}.`
                 });
-                Storage.saveDocument(data);
                 if (typeof ux !== 'undefined') ux.success('PDF enviado para o WhatsApp!');
                 return;
             } catch (err) {
@@ -663,9 +667,6 @@ class BudgetForm {
         const whatsappUrl = phoneNumber
             ? `https://wa.me/55${phoneNumber}?text=${message}`
             : `https://wa.me/?text=${message}`;
-
-        // Salvar dados no histórico
-        Storage.saveDocument(data);
 
         // Abrir WhatsApp
         window.open(whatsappUrl, '_blank');
